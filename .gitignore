@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+juegoDeLaVida
+juegoDeLaVidaTest
+
+# Carpetas
+.idea/
+cmake-build-debug/
