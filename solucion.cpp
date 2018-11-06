@@ -2,7 +2,16 @@
 
 /********************************** EJERCICIO esValido **********************************/
 bool esValido(toroide t){
-    return true;
+    bool res = true;
+    for (int i = 0; i < t.size() ; ++i) {
+        if(t[i].size() == t[0].size()) {
+            res = true;
+        } else {
+            res = false;
+            break;
+        }
+    }
+    return res;
 }
 
 /****************************** EJERCICIO posicionesVivas *******************************/
