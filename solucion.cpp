@@ -1,10 +1,62 @@
 #include "solucion.h"
 
+using namespace std;
+
+int filas(toroide& t) {
+    return t.size();
+}
+
+int columnas(toroide& t) {
+    return filas(t) > 0 ? t[0].size() : 0;
+}
+
+int mod(int x, int m) {
+    int r = x%m;
+    return r<0 ? r+m : r;
+}
+
+bool viva(toroide& t, int x, int y) {
+    return t[mod(x, filas(t))][mod(y, columnas(t))];
+}
+
+int cantidadDeVivas(toroide& t) {
+    int res = 0;
+    for (int i = 0; i < filas(t); ++i) {
+        for (int j = 0; j < columnas(t); ++j) {
+            if (viva(t, i, j)) {
+                res++;
+            }
+        }
+    }
+    return res;
+}
+
+int superficieTotal(toroide& t) {
+    return filas(t) * columnas(t);
+}
+
+int vecinosVivos(toroide& t, int x, int y) {
+    int res = 0;
+    for (int i = -1; i <= 1; ++i) {
+        for (int j = -1; j <= 1; ++j) {
+            if ( (i != 0 || j != 0) && viva(t, x+i, y+j)) {
+                res++;
+            }
+        }
+    }
+    return res;
+}
+
+bool debeVivir(toroide& t, posicion& p) {
+    bool estaViva = viva(t, get<0>(p), get<1>(p));
+    int vecinos = vecinosVivos(t, get<0>(p), get<1>(p));
+    return (estaViva && vecinos == 2) || vecinos == 3;
+}
 /********************************** EJERCICIO esValido **********************************/
 bool esValido(toroide t){
     bool res = true;
-    for (int i = 0; i < t.size() ; ++i) {
-        if(t[i].size() == t[0].size()) {
+    for (int i = 0; i < filas(t) ; ++i) {
+        if(t[i].size() == columnas(t)) {
             res = true;
         } else {
             res = false;
@@ -17,18 +69,24 @@ bool esValido(toroide t){
 /****************************** EJERCICIO posicionesVivas *******************************/
 vector<posicion> posicionesVivas(toroide t){
     vector<posicion> res;
+    for (int i = 0; i < filas(t) ; ++i) {
+        for (int j = 0; j < columnas(t) ; ++j) {
+            if(viva(t, i, j)){
+                res.push_back(make_tuple(i,j));
+            }
+        }
+    }
     return res;
 }
 
 /***************************** EJERCICIO densidadPoblacion ******************************/
 float densidadPoblacion(toroide t){
-    float densidad = 0.0;
-    return densidad;
+    return (float)cantidadDeVivas(t)/superficieTotal(t);
 }
 
 /**************************** EJERCICIO evolucionDePosicion *****************************/
 bool evolucionDePosicion(toroide t, posicion p){
-    return true;
+    return debeVivir(t, p);
 }
 
 /****************************** EJERCICIO evolucionToroide ******************************/
@@ -59,7 +117,10 @@ int seleccionNatural(vector<toroide> ts){
 
 /********************************** EJERCICIO fusionar **********************************/
 toroide fusionar(toroide t1, toroide t2){
-    toroide t;
+    toroide t = {
+            {true, false, false},
+            {false, true, false},
+            {false, false, true}};
     return t;
 }
 
