@@ -91,17 +91,44 @@ bool evolucionDePosicion(toroide t, posicion p){
 
 /****************************** EJERCICIO evolucionToroide ******************************/
 void evolucionToroide(toroide& t){
+    toroide tOriginal = t;
+    for (int i = 0; i < filas(t) ; ++i) {
+        for (int j = 0; j < columnas(t); ++j) {
+            t[i][j] = evolucionDePosicion(tOriginal, make_tuple(i, j));
+        }
+    }
 }
 
 /***************************** EJERCICIO evolucionMultiple ******************************/
 toroide evolucionMultiple(toroide t, int k){
-    toroide result;
-    return result;
+    toroide tCopia = t;
+    for (int i = 0; i < k; ++i) evolucionToroide(tCopia);
+    return tCopia;
 }
 
 /******************************** EJERCICIO esPeriodico *********************************/
 bool esPeriodico(toroide t, int& p){
-    return false;
+    toroide tCopia = t;
+    toroide tMuerto = t;
+    for (int i = 0; i < filas(t) ; ++i) {
+        for (int j = 0; j < columnas(t); ++j) {
+            tMuerto[i][j] = false;
+        }
+    }
+    int periodo = 0;
+    if (tCopia == tMuerto) {
+        p = 1;
+        return true;
+    }
+    do {
+        periodo++;
+        evolucionToroide(tCopia);
+        if (tCopia == tMuerto) {
+            return false;
+        }
+    } while (tCopia != t);
+    p = periodo;
+    return true;
 }
 
 /******************************* EJERCICIO primosLejanos ********************************/
