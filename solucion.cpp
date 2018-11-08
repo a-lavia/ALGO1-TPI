@@ -109,26 +109,23 @@ toroide evolucionMultiple(toroide t, int k){
 /******************************** EJERCICIO esPeriodico *********************************/
 bool esPeriodico(toroide t, int& p){
     toroide tCopia = t;
-    toroide tMuerto = t;
-    for (int i = 0; i < filas(t) ; ++i) {
-        for (int j = 0; j < columnas(t); ++j) {
-            tMuerto[i][j] = false;
-        }
-    }
-    int periodo = 0;
-    if (tCopia == tMuerto) {
-        p = 1;
-        return true;
-    }
-    do {
-        periodo++;
-        evolucionToroide(tCopia);
-        if (tCopia == tMuerto) {
-            return false;
-        }
-    } while (tCopia != t);
-    p = periodo;
-    return true;
+    vector<toroide> ts;
+		int periodo = 0;
+		while (true) {
+			periodo++;
+			evolucionToroide(tCopia);
+			if (tCopia == t) {
+				p = periodo;
+				return true;
+			} else {
+				for (int i = 0; i < ts.size(); ++i) {
+					if (ts[i] == tCopia) {
+						return false;
+					}
+				}
+				ts.push_back(tCopia);
+			}
+		}
 }
 
 /******************************* EJERCICIO primosLejanos ********************************/
