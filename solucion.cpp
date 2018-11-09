@@ -101,36 +101,62 @@ void evolucionToroide(toroide& t){
 
 /***************************** EJERCICIO evolucionMultiple ******************************/
 toroide evolucionMultiple(toroide t, int k){
-    toroide tCopia = t;
-    for (int i = 0; i < k; ++i) evolucionToroide(tCopia);
-    return tCopia;
+    toroide tE = t;
+    for (int i = 0; i < k; ++i) evolucionToroide(tE);
+    return tE;
 }
 
 /******************************** EJERCICIO esPeriodico *********************************/
 bool esPeriodico(toroide t, int& p){
-    toroide tCopia = t;
-    vector<toroide> ts;
-		int periodo = 0;
-		while (true) {
-			periodo++;
-			evolucionToroide(tCopia);
-			if (tCopia == t) {
-				p = periodo;
-				return true;
-			} else {
-				for (int i = 0; i < ts.size(); ++i) {
-					if (ts[i] == tCopia) {
-						return false;
-					}
+	toroide tE = t;
+	vector<toroide> ts;
+	int periodo = 0;
+	while (true) {
+		periodo++;
+		evolucionToroide(tE);
+		if (tE == t) {
+			//alguna evolucion del toroide tE a partir de t volvio a ser igual al original por lo tanto es periodico
+			p = periodo;
+			return true;
+		} else {
+			//la evolucion tE no es igual a t, pero busco algun 'subperiodo' dentro de la historia de evoluciones
+			for (int i = 0; i < ts.size(); ++i) {
+				if (ts[i] == tE) {
+					//encontre un 'subperiodo' de tE, es decir tE evolucionara periodicamente y nunca va a llegar al t original
+					//por lo tanto t no es periodico, no existen k evoluciones que lo regresen a si mismo
+					//sino que evoluciona a un tE que loopea en su propio periodo
+					return false;
 				}
-				ts.push_back(tCopia);
 			}
+			//tE no tiene un subperiodo, lo agrego a la historia de evoluciones y sigo iterando
+			ts.push_back(tE);
 		}
+	}
+	//La terminacion del algoritmo se basa en la propiedad que todo toroide tiene un periodo o un 'subperiodo'
 }
 
 /******************************* EJERCICIO primosLejanos ********************************/
 bool primosLejanos(toroide t1, toroide t2) {
-    return false;
+	toroide t = t1;
+	while (true) {
+		int p = 0;
+		if (t == t2) {
+			//alguna evolucion t de t1 es igual a t2, por lo tanto son primos lejanos.
+			return true;
+		} else if (esPeriodico(t, p)) {
+			//t no es igual a t2, pero tiene un periodo p. En caso de tener alguna evolucion que sea primo lejano de t2 la puedo encontrar en p pasos
+			for (int i = 0; i < p; ++i) {
+				//hago p evoluciones de t y me fijo si llego a t2
+				evolucionToroide(t);
+				if (t == t2) {
+					return true;
+				}
+			}
+			//no es posible llegar a t2 con ninguna evolucion de t, no son primos lejanos.
+			return false;
+		}
+		evolucionToroide(t);
+	}
 }
 
 /****************************** EJERCICIO seleccionNatural ******************************/
