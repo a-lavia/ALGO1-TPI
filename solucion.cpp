@@ -120,6 +120,7 @@ bool esPeriodico(toroide t, int& p){
 			return true;
 		} else {
 			//la evolucion tE no es igual a t, pero busco algun 'subperiodo' dentro de la historia de evoluciones
+			//un subperiodo de t es un tE periodico donde tE es alcanzable por k evoluciones desde t pero tE != t
 			for (int i = 0; i < ts.size(); ++i) {
 				if (ts[i] == tE) {
 					//encontre un 'subperiodo' de tE, es decir tE evolucionara periodicamente y nunca va a llegar al t original
@@ -128,11 +129,14 @@ bool esPeriodico(toroide t, int& p){
 					return false;
 				}
 			}
-			//tE no tiene un subperiodo, lo agrego a la historia de evoluciones y sigo iterando
+			//tE no es un subperiodo de alguna evolucion anterior en este punto, lo agrego a la historia de evoluciones y sigo iterando
 			ts.push_back(tE);
 		}
 	}
-	//La terminacion del algoritmo se basa en la propiedad que todo toroide tiene un periodo o un 'subperiodo'
+	//la terminacion del algoritmo se basa en la propiedad que todo toroide tiene un periodo o un subperiodo
+	//la idea es que la operacion evolucionToroide esta definida para todo toroide t, luego hay una secuencia infinita de evoluciones de t
+	//pero el toroide tiene dimensiones finitas por lo tanto hay finitos estados posibles a los que pueda llegar (2^(columnas*filas))
+	//luego deben existir dos toroides iguales en la secuencia, esto es que tiene subperiodo.
 }
 
 /******************************* EJERCICIO primosLejanos ********************************/
