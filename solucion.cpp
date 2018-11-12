@@ -2,95 +2,97 @@
 
 using namespace std;
 
+/********************************** Auxiliares **********************************/
+
 int filas(toroide& t) {
-    return t.size();
+	return t.size();
 }
 
 int columnas(toroide& t) {
-    return filas(t) > 0 ? t[0].size() : 0;
+	return filas(t) > 0 ? t[0].size() : 0;
 }
 
 int mod(int x, int m) {
-    int r = x%m;
-    return r<0 ? r+m : r;
+	int r = x%m;
+	return r<0 ? r+m : r;
 }
 
 bool viva(toroide& t, int x, int y) {
-    return t[mod(x, filas(t))][mod(y, columnas(t))];
+	return t[mod(x, filas(t))][mod(y, columnas(t))];
 }
 
 int cantidadDeVivas(toroide& t) {
-    int res = 0;
-    for (int i = 0; i < filas(t); ++i) {
-        for (int j = 0; j < columnas(t); ++j) {
-            if (viva(t, i, j)) {
-                res++;
-            }
-        }
-    }
-    return res;
+	int res = 0;
+	for (int i = 0; i < filas(t); ++i)
+		for (int j = 0; j < columnas(t); ++j)
+			if (viva(t, i, j)) res++;
+	return res;
 }
 
 int superficieTotal(toroide& t) {
-    return filas(t) * columnas(t);
+	return filas(t) * columnas(t);
 }
 
 int vecinosVivos(toroide& t, int x, int y) {
-    int res = 0;
-    for (int i = -1; i <= 1; ++i) {
-        for (int j = -1; j <= 1; ++j) {
-            if ( (i != 0 || j != 0) && viva(t, x+i, y+j)) {
-                res++;
-            }
-        }
-    }
-    return res;
+	int res = 0;
+	for (int i = -1; i <= 1; ++i)
+		for (int j = -1; j <= 1; ++j)
+			if ( (i != 0 || j != 0) && viva(t, x+i, y+j))	res++;
+	return res;
 }
 
 bool debeVivir(toroide& t, posicion& p) {
-    bool estaViva = viva(t, get<0>(p), get<1>(p));
-    int vecinos = vecinosVivos(t, get<0>(p), get<1>(p));
-    return (estaViva && vecinos == 2) || vecinos == 3;
+	bool estaViva = viva(t, get<0>(p), get<1>(p));
+	int vecinos = vecinosVivos(t, get<0>(p), get<1>(p));
+	return (estaViva && vecinos == 2) || vecinos == 3;
 }
 
 int muereEn(toroide& t) {
-    int contador = 0;
-    while (cantidadDeVivas(t) != 0) {
-        evolucionToroide(t);
-        contador++;
-    }
-    return contador;
+	int contador = 0;
+  while (cantidadDeVivas(t) != 0) {
+		evolucionToroide(t);
+    contador++;
+  }
+  return contador;
 }
+
+int calcularMinimaSuperficie(toroide& t) {
+	int min_x = filas(t);
+	int min_y = columnas(t);
+	int max_x = 0;
+	int max_y = 0;
+
+	for (int i = 0; i < filas(t); ++i) {
+		for (int j = 0; j < columnas(t); ++j) {
+			min_x = viva(t, i, j) ? min(i, min_x) : min_x;
+			min_y = viva(t, i, j) ? min(j, min_y) : min_y;
+			max_x = viva(t, i, j) ? max(i, max_x) : max_x;
+			max_y = viva(t, i, j) ? max(j, max_y) : max_y;
+		}
+	}
+	return (max_x - min_x) * (max_y - min_y);
+}
+
 /********************************** EJERCICIO esValido **********************************/
 bool esValido(toroide t){
-    bool res = true;
-    for (int i = 0; i < filas(t) ; ++i) {
-        if(t[i].size() == columnas(t)) {
-            res = true;
-        } else {
-            res = false;
-            break;
-        }
-    }
-    return res;
+	if (filas(t) * columnas(t) == 0) return false;
+  for (int i = 0; i < filas(t) ; ++i)
+		if(t[i].size() != columnas(t)) return false;
+	return true;
 }
 
 /****************************** EJERCICIO posicionesVivas *******************************/
 vector<posicion> posicionesVivas(toroide t){
-    vector<posicion> res;
-    for (int i = 0; i < filas(t) ; ++i) {
-        for (int j = 0; j < columnas(t) ; ++j) {
-            if(viva(t, i, j)){
-                res.push_back(make_tuple(i,j));
-            }
-        }
-    }
-    return res;
+	vector<posicion> res;
+	for (int i = 0; i < filas(t) ; ++i)
+		for (int j = 0; j < columnas(t) ; ++j)
+			if(viva(t, i, j)) res.push_back(make_tuple(i,j));
+	return res;
 }
 
 /***************************** EJERCICIO densidadPoblacion ******************************/
 float densidadPoblacion(toroide t){
-    return (float)cantidadDeVivas(t)/superficieTotal(t);
+	return (float)cantidadDeVivas(t)/superficieTotal(t);
 }
 
 /**************************** EJERCICIO evolucionDePosicion *****************************/
@@ -100,19 +102,17 @@ bool evolucionDePosicion(toroide t, posicion p){
 
 /****************************** EJERCICIO evolucionToroide ******************************/
 void evolucionToroide(toroide& t){
-    toroide tOriginal = t;
-    for (int i = 0; i < filas(t) ; ++i) {
-        for (int j = 0; j < columnas(t); ++j) {
-            t[i][j] = evolucionDePosicion(tOriginal, make_tuple(i, j));
-        }
-    }
+	toroide tOriginal = t;
+	for (int i = 0; i < filas(t) ; ++i)
+		for (int j = 0; j < columnas(t); ++j)
+			t[i][j] = evolucionDePosicion(tOriginal, make_tuple(i, j));
 }
 
 /***************************** EJERCICIO evolucionMultiple ******************************/
 toroide evolucionMultiple(toroide t, int k){
-    toroide tE = t;
-    for (int i = 0; i < k; ++i) evolucionToroide(tE);
-    return tE;
+	toroide tE = t;
+  for (int i = 0; i < k; ++i) evolucionToroide(tE);
+  return tE;
 }
 
 /******************************** EJERCICIO esPeriodico *********************************/
@@ -142,7 +142,7 @@ bool esPeriodico(toroide t, int& p){
 			ts.push_back(tE);
 		}
 	}
-	//la terminacion del algoritmo se basa en la propiedad que todo toroide tiene un periodo o un subperiodo
+	//la terminacion del algoritmo se basa en la propiedad que todo toroide es periodico o tiene un subperiodo
 	//la idea es que la operacion evolucionToroide esta definida para todo toroide t, luego hay una secuencia infinita de evoluciones de t
 	//pero el toroide tiene dimensiones finitas por lo tanto hay finitos estados posibles a los que pueda llegar (2^(columnas*filas))
 	//luego deben existir dos toroides iguales en la secuencia, esto es que tiene subperiodo.
@@ -192,34 +192,47 @@ int seleccionNatural(vector<toroide> ts){
 
 /********************************** EJERCICIO fusionar **********************************/
 toroide fusionar(toroide t1, toroide t2){
-    toroide t = t1;
-    for (int i = 0; i < filas(t) ; ++i) {
-        for (int j = 0; j < columnas(t) ; ++j) {
-            if(viva(t1,i,j) && viva(t2,i,j)){
-                t[i][j] = true;
-            } else { t[i][j] = false;
-
-            }
-        }
-
+	toroide t = t1;
+  for (int i = 0; i < filas(t) ; ++i) {
+		for (int j = 0; j < columnas(t) ; ++j) {
+    	if(viva(t1,i,j) && viva(t2,i,j)) {
+      	t[i][j] = true;
+      } else {
+				t[i][j] = false;
+      }
     }
-    return t;
+  }
+  return t;
 }
 
 /****************************** EJERCICIO vistaTrasladada *******************************/
 bool vistaTrasladada(toroide t1, toroide t2){
-    bool res = false;
-    return res;
+  if(!(filas(t1) == filas(t2) && columnas(t2) == columnas(t1))) return false;
+	for (int tx = 0; tx < filas(t1); ++tx) {
+		for (int ty = 0; ty < columnas(t1); ++ty) {
+
+			bool esTrasladada = true;
+			for (int i = 0; i < filas(t1); ++i) {
+				for (int j = 0; j < columnas(t1); ++j) {
+					esTrasladada = esTrasladada && (viva(t1, i, j) == viva(t2, i+tx, j+ty));
+				}
+			}
+			if (esTrasladada) return true;
+
+		}
+	}
+  return false;
 }
 
 /******************************* EJERCICIO enCrecimiento ********************************/
 bool enCrecimiento(toroide t){
-    bool res;
-    return res;
+	toroide tE = t;
+	evolucionToroide(tE);
+	return calcularMinimaSuperficie(t) < calcularMinimaSuperficie(tE);
 }
 
 /******************************* EJERCICIO soloBloques (OPCIONAL) ***********************/
 bool soloBloques(toroide t){
-    bool res;
-    return res;
+	bool res;
+  return res;
 }
