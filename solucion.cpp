@@ -52,6 +52,15 @@ bool debeVivir(toroide& t, posicion& p) {
     int vecinos = vecinosVivos(t, get<0>(p), get<1>(p));
     return (estaViva && vecinos == 2) || vecinos == 3;
 }
+
+int muereEn(toroide& t) {
+    int contador = 0;
+    while (cantidadDeVivas(t) != 0) {
+        evolucionToroide(t);
+        contador++;
+    }
+    return contador;
+}
 /********************************** EJERCICIO esValido **********************************/
 bool esValido(toroide t){
     bool res = true;
@@ -165,16 +174,35 @@ bool primosLejanos(toroide t1, toroide t2) {
 
 /****************************** EJERCICIO seleccionNatural ******************************/
 int seleccionNatural(vector<toroide> ts){
-    int indice;
+    int indice = 0;
+    int i = 0;
+    while(i < ts.size()){
+        int p = 0;
+        if(esPeriodico(ts[i],p)){
+            indice = i;
+            return indice;
+        } else if( muereEn(ts[i]) < muereEn(ts[indice])) {
+                        indice = i;
+                }
+            i++;
+    }
+
     return indice;
 }
 
 /********************************** EJERCICIO fusionar **********************************/
 toroide fusionar(toroide t1, toroide t2){
-    toroide t = {
-            {true, false, false},
-            {false, true, false},
-            {false, false, true}};
+    toroide t = t1;
+    for (int i = 0; i < filas(t) ; ++i) {
+        for (int j = 0; j < columnas(t) ; ++j) {
+            if(viva(t1,i,j) && viva(t2,i,j)){
+                t[i][j] = true;
+            } else { t[i][j] = false;
+
+            }
+        }
+
+    }
     return t;
 }
 
