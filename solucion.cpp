@@ -162,6 +162,7 @@ bool esPeriodico(toroide t, int &p) {
 
 /******************************* EJERCICIO primosLejanos ********************************/
 bool primosLejanos(toroide t1, toroide t2) {
+    if (!(filas(t1) == filas(t2) && columnas(t2) == columnas(t1))) return false;
     toroide t = t1;
     while (true) {
         int p;
