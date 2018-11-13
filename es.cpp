@@ -49,6 +49,29 @@ toroide cargarToroide(string nombreArchivo, bool &status)
 /******************************** EJERCICIO escribirToroide *****************************/
 bool escribirToroide(string nombreArchivo, toroide &t)
 {
-	bool res;
-	return res;
+	int cantidadDeVivas = 0;
+	ofstream fout;
+	fout.open(nombreArchivo);
+	if(fout.fail()){
+		return false;
+	}
+	fout << t.size() << ' ';
+	fout << t[0].size() << endl;
+
+	for (int i = 0; i < t.size() ; ++i) {
+		for (int j = 0; j <t[0].size() ; ++j) {
+			 if(t[i][j] == true){
+				 fout << 1;
+				 cantidadDeVivas ++;
+			 } else fout << 0;
+			if (j < t[0].size()-1) fout << ' ';
+		}
+   		fout << endl;
+	}
+	fout << cantidadDeVivas << endl;
+	fout.close();
+	if(fout.fail()){
+		return false;
+	}
+	return true;
 }
