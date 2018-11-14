@@ -185,7 +185,7 @@ bool esPeriodico(toroide t, int &p) {
     //la terminacion del algoritmo se basa en la propiedad que todo toroide es periodico o tiene un subperiodo
     //la idea es que la operacion evolucionToroide esta definida para todo toroide t, luego hay una secuencia infinita de evoluciones de t
     //pero el toroide tiene dimensiones finitas por lo tanto hay finitos estados posibles a los que pueda llegar (2^(columnas*filas))
-    //luego deben existir dos toroides iguales en la secuencia, esto es que tiene subperiodo.
+    //luego deben existir dos toroides tP iguales en la secuencia, si tP = t es periodico si tP != t tiene subperiodo.
 }
 
 /******************************* EJERCICIO primosLejanos ********************************/
