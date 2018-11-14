@@ -85,6 +85,34 @@ int calcularMinimaSuperficie(toroide t) {
     return (max_x - min_x) * (max_y - min_y);
 }
 
+bool esSubBloque(toroide t, int x, int y, toroide subt) {
+    bool res = true;
+    for (int i = -1; i <= 1; ++i)
+        for (int j = -1; j <= 1; ++j)
+            res = res && (viva(t, x+i, y+j) == subt[i+1][j+1]);
+    return res;
+}
+
+bool esBloque(toroide t, int x, int y) {
+    toroide t1 = { 
+                  {false, false, false},
+                  {false, true, true},
+                  {false, true, true}};
+    toroide t2 = { 
+                  {false, true, true},
+                  {false, true, true},
+                  {false, false, false}};
+    toroide t3 = { 
+                  {true, true, false},
+                  {true, true, false},
+                  {false, false, false}};
+    toroide t4 = { 
+                  {false, false, false},
+                  {true, true, false},
+                  {true, true, false}};
+    return esSubBloque(t, x, y, t1) || esSubBloque(t, x, y, t2) || esSubBloque(t, x, y, t3) || esSubBloque(t, x, y, t4);
+}
+
 /********************************** EJERCICIO esValido **********************************/
 bool esValido(toroide t) {
     if (filas(t) * columnas(t) == 0) return false;
@@ -237,6 +265,10 @@ bool enCrecimiento(toroide t) {
 
 /******************************* EJERCICIO soloBloques (OPCIONAL) ***********************/
 bool soloBloques(toroide t) {
-    bool res;
-    return res;
+    for (int i = 0; i < filas(t); ++i) {
+        for (int j = 0; j < columnas(t); ++j) {
+            if (viva(t, i, j) && !esBloque(t, i, j)) return false;
+        }
+    }
+    return true;
 }
