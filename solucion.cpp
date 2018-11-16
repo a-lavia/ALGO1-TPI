@@ -115,7 +115,7 @@ bool esBloque(toroide t, int x, int y) {
 
 /********************************** EJERCICIO esValido **********************************/
 bool esValido(toroide t) {
-    if (filas(t) * columnas(t) == 0) return false;
+    if (superficieTotal(t) == 0) return false;
     for (int i = 0; i < filas(t); ++i)
         if (t[i].size() != columnas(t)) return false;
     return true;
